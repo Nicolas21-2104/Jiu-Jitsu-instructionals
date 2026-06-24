@@ -1,0 +1,6 @@
+{
+  "name": "Enciclopedia Buggy Choke y Octopus Guard",
+  "description": "Manual y enciclopedia técnica detallada de las mecánicas, transiciones, diagramas y preparación de fuerza para Buggy Choke y Octopus Guard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
