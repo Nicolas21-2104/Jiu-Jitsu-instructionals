@@ -1,22 +1,22 @@
 import { useState, useEffect } from 'react';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { 
-  Shield, 
-  Dumbbell, 
-  RotateCcw, 
-  Cpu, 
-  Navigation, 
-  Activity, 
-  Layers, 
-  BookOpen, 
-  Eye, 
-  ChevronRight, 
-  Info, 
-  Scale, 
-  Compass, 
-  Zap, 
-  CheckCircle, 
-  Flame, 
+import {
+  Shield,
+  Dumbbell,
+  RotateCcw,
+  Cpu,
+  Navigation,
+  Activity,
+  Layers,
+  BookOpen,
+  Eye,
+  ChevronRight,
+  Info,
+  Scale,
+  Compass,
+  Zap,
+  CheckCircle,
+  Flame,
   Book,
   Anchor,
   Shuffle,
@@ -27,21 +27,35 @@ import {
   ZoomOut,
   ChevronDown,
   ChevronUp,
-  CameraOff
+  CameraOff,
+  Trophy,
+  Swords,
+  Timer,
+  MapPin,
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { 
-  IMAGES, 
-  bjjFanaticsCourses, 
-  technicalExplanations, 
-  flowchartNodesDetail, 
-  gppRoutines, 
-  stretches, 
-  buggyNormalVectors, 
-  buggyInvertedVectors, 
+import {
+  IMAGES,
+  bjjFanaticsCourses,
+  technicalExplanations,
+  flowchartNodesDetail,
+  gppRoutines,
+  stretches,
+  buggyNormalVectors,
+  buggyInvertedVectors,
   buggyOneHandVectors,
   FlowNodeInfo
 } from './data';
+import {
+  BeltTracker,
+  ImprovementChecklist,
+  ProgressRadar,
+  TrainingLog,
+  RoundTimer,
+  TechniqueNotes,
+  PositionMap,
+  GameplanTree,
+} from './components/NewFeatures';
 
 interface SafeBJJImageProps {
   src: string;
@@ -71,30 +85,31 @@ function SafeBJJImage({ src, alt, placeholderText, className = "", referrerPolic
   }
 
   return (
-    <img 
-      src={src} 
-      alt={alt} 
+    <img
+      src={src}
+      alt={alt}
       referrerPolicy={referrerPolicy || "no-referrer"}
       onError={() => {
         setError(true);
       }}
-      className={className} 
+      className={className}
     />
   );
 }
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('biomechanics');
-  
+
   // Interactive Vectors State
   const [selectedVector, setSelectedVector] = useState<string>('bn-f1');
   const [selectedVectorInv, setSelectedVectorInv] = useState<string>('bi-f1');
   const [selectedVectorHand, setSelectedVectorHand] = useState<string>('bh-f1');
-  
+
   // Interactive Playbook Scramble States
   const [selectedPlaybookCat, setSelectedPlaybookCat] = useState<string>('controlLateral');
   const [activeScrambleNode, setActiveScrambleNode] = useState<string>('cl');
-
+  // Radar progress state
+  const [radarData, setRadarData] = useState<{ category: string; pct: number }[]>([]);
   // GPP States
   const [userWeight, setUserWeight] = useState<number>(78);
   const [selectedCourse, setSelectedCourse] = useState<number>(0);
@@ -179,7 +194,7 @@ export default function App() {
         document.head.appendChild(script);
       }
     };
-    
+
     loadMermaid();
   }, [activeTab]);
 
@@ -189,7 +204,7 @@ export default function App() {
     const numericPSI = parseFloat(baselinePSI);
     let level = 'Leve (Compresión venosa)';
     let color = 'text-blue-400';
-    
+
     if (numericPSI > 12) {
       level = 'Crítico (Oclusión Carotídea Súbita)';
       color = 'text-rose-500 font-extrabold animate-pulse';
@@ -197,7 +212,7 @@ export default function App() {
       level = 'Moderado-Alto (Compresión Arterial Parcial)';
       color = 'text-amber-400 font-bold';
     }
-    
+
     return { psi: numericPSI, level, color };
   };
 
@@ -260,11 +275,11 @@ graph TD
 
   return (
     <div className="min-h-screen bg-[#07090e] text-[#e2e8f0] font-sans antialiased selection:bg-[#ff4444] selection:text-white pb-12">
-      
+
       {/* ══ HEADER ESTÉTICA SCI-FI DARK DIALECT ══ */}
       <header className="relative border-b border-white/5 bg-[#0b0d13]/90 backdrop-blur-md sticky top-0 z-50 px-6 py-4">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          
+
           <div className="flex items-center gap-3">
             <div className="relative">
               <span className="absolute inset-0 rounded-full bg-[#ff4444]/20 animate-ping" />
@@ -294,12 +309,12 @@ graph TD
             )}
             <div className="bg-black/40 border border-white/5 px-3 py-1.5 rounded-lg flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-white/60 hidden md:inline">BJJ Fanatics Curriculums:</span> 
+              <span className="text-white/60 hidden md:inline">BJJ Fanatics Curriculums:</span>
               <span className="text-white font-bold">2 Cursos</span>
             </div>
             <div className="bg-black/40 border border-white/5 px-3 py-1.5 rounded-lg hidden sm:flex items-center gap-2">
               <Activity className="w-3.5 h-3.5 text-[#ff4444]" />
-              <span className="text-white/60 hidden md:inline">OCR Data:</span> 
+              <span className="text-white/60 hidden md:inline">OCR Data:</span>
               <span className="text-rose-400 font-bold">Map</span>
             </div>
           </div>
@@ -309,7 +324,7 @@ graph TD
 
       {/* ══ PANEL CENTRAL CON CONTENEDOR FLUIDO ══ */}
       <main className="max-w-7xl mx-auto px-4 md:px-6 mt-8 space-y-8">
-        
+
         {/* NAVEGACIÓN DE TABS EXCLUSIVOS */}
         <div className="flex flex-wrap gap-2 p-1.5 bg-[#0b0d13] border border-white/5 rounded-xl">
           {[
@@ -320,17 +335,20 @@ graph TD
             { id: 'vector', label: '5. Análisis de Fuerzas', icon: Activity },
             { id: 'gpp', label: '6. Planificación GPP', icon: Dumbbell },
             { id: 'stretches', label: '7. Rejilla Movilidad PDF', icon: Layers },
+            { id: 'belt', label: '8. Cinturón & Progreso', icon: Trophy },
+            { id: 'gameplan', label: '9. Gameplan', icon: Swords },
+            { id: 'training', label: '10. Entrenos & Timer', icon: Timer },
+            { id: 'map', label: '11. Mapa de Posiciones', icon: MapPin },
           ].map((tab) => {
             const Icon = tab.icon;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold font-mono transition-all duration-200 ${
-                  activeTab === tab.id
-                    ? 'bg-[#ff4444]/15 text-white border border-[#ff4444]/30 shadow-md shadow-[#ff4444]/5'
-                    : 'text-[#94a3b8] hover:text-white hover:bg-white/[0.02] border border-transparent'
-                }`}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold font-mono transition-all duration-200 ${activeTab === tab.id
+                  ? 'bg-[#ff4444]/15 text-white border border-[#ff4444]/30 shadow-md shadow-[#ff4444]/5'
+                  : 'text-[#94a3b8] hover:text-white hover:bg-white/[0.02] border border-transparent'
+                  }`}
               >
                 <Icon className={`w-3.5 h-3.5 ${activeTab === tab.id ? 'text-[#ff4444]' : 'text-[#94a3b8]'}`} />
                 {tab.label}
@@ -341,7 +359,7 @@ graph TD
 
         {activeTab === 'biomechanics' && (
           <div className="space-y-8 animate-fadeIn">
-            
+
             {/* INTRODUCCIÓN GENERAL ACADÉMICA */}
             <div className="bg-[#11141d] border border-white/5 rounded-2xl p-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#ff4444]/5 rounded-full blur-3xl pointer-events-none" />
@@ -369,13 +387,12 @@ graph TD
                 {bjjFanaticsCourses.map((course, idx) => {
                   const isInstructorOpen = activeInstructorIndex === idx;
                   return (
-                    <div 
-                      key={idx} 
-                      className={`border transition-all duration-300 rounded-2xl overflow-hidden ${
-                        isInstructorOpen 
-                          ? 'border-purple-500/35 bg-black/40 shadow-2xl' 
-                          : 'border-white/5 bg-black/20 hover:border-white/10 hover:bg-black/30'
-                      }`}
+                    <div
+                      key={idx}
+                      className={`border transition-all duration-300 rounded-2xl overflow-hidden ${isInstructorOpen
+                        ? 'border-purple-500/35 bg-black/40 shadow-2xl'
+                        : 'border-white/5 bg-black/20 hover:border-white/10 hover:bg-black/30'
+                        }`}
                     >
                       {/* ENCABEZADO DEL ACORDEÓN DE ENTRENADOR */}
                       <button
@@ -385,11 +402,11 @@ graph TD
                         <div className="flex items-start md:items-center gap-4">
                           {/* FOTO MINIATURA DE ACCIÓN DEL PROPIO ENTRENADOR */}
                           <div className="w-14 h-14 rounded-xl overflow-hidden border border-white/10 bg-black shrink-0">
-                            <SafeBJJImage 
-                              src={course.imageUrl} 
+                            <SafeBJJImage
+                              src={course.imageUrl}
                               alt={course.instructor}
                               placeholderText={course.instructor.replace(/[^a-zA-Z0-9]/g, "")}
-                              className="w-full h-full object-cover filter brightness-95" 
+                              className="w-full h-full object-cover filter brightness-95"
                             />
                           </div>
                           <div>
@@ -422,7 +439,7 @@ graph TD
                       {/* CUERPO DEL ACORDEÓN DE ENTRENADOR */}
                       {isInstructorOpen && (
                         <div className="p-6 border-t border-white/5 bg-[#0d0f14]/55 grid lg:grid-cols-12 gap-6 animate-fadeIn">
-                          
+
                           {/* DESCRIPCIÓN E IMAGEN DESTACADA DEL CURSO */}
                           <div className="lg:col-span-4 space-y-4">
                             <div className="bg-[#161a24]/80 p-4 rounded-xl border border-white/5 space-y-3">
@@ -431,13 +448,13 @@ graph TD
                                 {course.description}
                               </p>
                             </div>
-                            
+
                             <div className="relative rounded-xl border border-white/10 overflow-hidden bg-black shadow-lg">
-                              <SafeBJJImage 
-                                src={course.imageUrl} 
+                              <SafeBJJImage
+                                src={course.imageUrl}
                                 alt={`${course.instructor} manual`}
                                 placeholderText={course.instructor.replace(/[^a-zA-Z0-9]/g, "") + "Manual"}
-                                className="w-full h-auto aspect-video object-cover" 
+                                className="w-full h-auto aspect-video object-cover"
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent flex items-end p-3">
                                 <span className="text-[9px] font-mono text-white/60">
@@ -450,18 +467,17 @@ graph TD
                           {/* VOLÚMENES DESPLEGABLES INTERNOS */}
                           <div className="lg:col-span-8 space-y-3">
                             <span className="text-[10px] font-mono text-white/40 uppercase block mb-1">PROGRAMA DE LECCIONES:</span>
-                            
+
                             {course.volumes.map((v, vIdx) => {
                               const volumeKey = `${idx}-${vIdx}`;
                               const isVolumeOpen = activeVolumeKey === volumeKey;
                               return (
-                                <div 
-                                  key={vIdx} 
-                                  className={`rounded-xl border transition-all ${
-                                    isVolumeOpen 
-                                      ? 'bg-[#161a24] border-purple-500/20' 
-                                      : 'bg-black/30 border-white/5 hover:border-white/10'
-                                  }`}
+                                <div
+                                  key={vIdx}
+                                  className={`rounded-xl border transition-all ${isVolumeOpen
+                                    ? 'bg-[#161a24] border-purple-500/20'
+                                    : 'bg-black/30 border-white/5 hover:border-white/10'
+                                    }`}
                                 >
                                   {/* BOTÓN TOGGLE DE VOLUMEN */}
                                   <button
@@ -493,15 +509,15 @@ graph TD
                                           const isChapterExpanded = expandedChapterKey === chapterKey;
                                           return (
                                             <div key={chIdx} className="group transition-all">
-                                              
+
+
                                               {/* Fila interactiva principal */}
                                               <button
                                                 onClick={() => setExpandedChapterKey(isChapterExpanded ? null : chapterKey)}
-                                                className={`w-full text-left px-5 py-3.5 grid grid-cols-12 gap-4 items-center cursor-pointer transition-colors ${
-                                                  isChapterExpanded 
-                                                    ? 'bg-purple-950/20 text-white' 
-                                                    : 'hover:bg-white/[0.02] text-white/90'
-                                                }`}
+                                                className={`w-full text-left px-5 py-3.5 grid grid-cols-12 gap-4 items-center cursor-pointer transition-colors ${isChapterExpanded
+                                                  ? 'bg-purple-950/20 text-white'
+                                                  : 'hover:bg-white/[0.02] text-white/90'
+                                                  }`}
                                               >
                                                 {/* Título de Capítulo con Número */}
                                                 <div className="col-span-9 md:col-span-10 flex items-start gap-3.5">
@@ -538,6 +554,10 @@ graph TD
                                                     <p className="text-xs text-[#94a3b8] leading-relaxed text-left whitespace-pre-line">
                                                       {ch.explanation}
                                                     </p>
+                                                    <TechniqueNotes
+                                                      techniqueKey={`${course.instructor}_${v.volume}_${ch.title}`}
+                                                      techniqueLabel={ch.title}
+                                                    />
                                                   </div>
                                                 </div>
                                               )}
@@ -568,7 +588,7 @@ graph TD
         {/* ════════════════════ TAB 2: EL DILEMA CINÉTICO ════════════════════ */}
         {activeTab === 'dilemma' && (
           <div className="space-y-8 animate-fadeIn">
-            
+
             {/* EXPLICACIÓN DETALLADA DEL DILEMA */}
             <div className="bg-[#11141d] border border-white/5 rounded-2xl p-8">
               <div className="flex items-center gap-3 mb-6">
@@ -583,15 +603,15 @@ graph TD
 
               {/* SECCIÓN COMPARATIVA DE IMÁGENES EXPLICATIVAS GENERADAS */}
               <div className="grid md:grid-cols-2 gap-8 mb-8">
-                
+
                 {/* TARJETA OCTOPUS */}
                 <div className="bg-[#161a24] border border-white/5 rounded-xl overflow-hidden group hover:border-purple-500/20 transition-all">
                   <div className="relative h-64 bg-black overflow-hidden">
-                    <SafeBJJImage 
-                      src={IMAGES.octopusGuard} 
-                      alt="Octopus Guard Setup de Craig Jones" 
+                    <SafeBJJImage
+                      src={IMAGES.octopusGuard}
+                      alt="Octopus Guard Setup de Craig Jones"
                       placeholderText="OctopusGuard"
-                      className="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-all duration-500" 
+                      className="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-all duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#161a24] via-transparent to-transparent" />
                     <span className="absolute bottom-4 left-4 bg-purple-500/80 text-white text-[10px] font-mono font-bold px-2 py-1 rounded">
@@ -612,11 +632,11 @@ graph TD
                 {/* TARJETA REVERSE BUGGY */}
                 <div className="bg-[#161a24] border border-white/5 rounded-xl overflow-hidden group hover:border-[#ff4444]/20 transition-all">
                   <div className="relative h-64 bg-black overflow-hidden">
-                    <SafeBJJImage 
-                      src={IMAGES.reverseBuggy} 
-                      alt="Reverse Buggy Choke Biomechanics" 
+                    <SafeBJJImage
+                      src={IMAGES.reverseBuggy}
+                      alt="Reverse Buggy Choke Biomechanics"
                       placeholderText="ReverseBuggy"
-                      className="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-all duration-500" 
+                      className="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-all duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#161a24] via-transparent to-transparent" />
                     <span className="absolute bottom-4 left-4 bg-rose-500/80 text-white text-[10px] font-mono font-bold px-2 py-1 rounded">
@@ -686,22 +706,20 @@ graph TD
                 <div className="flex gap-2">
                   <button
                     onClick={() => setActiveTransitionStep('octToBug')}
-                    className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold font-mono transition-all border flex items-center justify-center gap-2.5 cursor-pointer ${
-                      activeTransitionStep === 'octToBug'
-                        ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-lg'
-                        : 'bg-[#0d0f14]/85 text-[#94a3b8] border-white/5 hover:border-white/10 hover:text-white'
-                    }`}
+                    className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold font-mono transition-all border flex items-center justify-center gap-2.5 cursor-pointer ${activeTransitionStep === 'octToBug'
+                      ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-lg'
+                      : 'bg-[#0d0f14]/85 text-[#94a3b8] border-white/5 hover:border-white/10 hover:text-white'
+                      }`}
                   >
                     <ChevronRight className="w-4 h-4 shrink-0 text-rose-400" />
                     1. Octopus ➔ Buggy Choke (Te aplasta)
                   </button>
                   <button
                     onClick={() => setActiveTransitionStep('bugToOct')}
-                    className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold font-mono transition-all border flex items-center justify-center gap-2.5 cursor-pointer ${
-                      activeTransitionStep === 'bugToOct'
-                        ? 'bg-purple-500/20 text-purple-300 border-purple-500/40 shadow-lg'
-                        : 'bg-[#0d0f14]/85 text-[#94a3b8] border-white/5 hover:border-white/10 hover:text-white'
-                    }`}
+                    className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold font-mono transition-all border flex items-center justify-center gap-2.5 cursor-pointer ${activeTransitionStep === 'bugToOct'
+                      ? 'bg-purple-500/20 text-purple-300 border-purple-500/40 shadow-lg'
+                      : 'bg-[#0d0f14]/85 text-[#94a3b8] border-white/5 hover:border-white/10 hover:text-white'
+                      }`}
                   >
                     <ChevronRight className="w-4 h-4 shrink-0 text-purple-400" />
                     2. Buggy ➔ Octopus Guard (Se escapa)
@@ -799,26 +817,24 @@ graph TD
                       Analiza el paso a paso detallado para ambas técnicas con demostraciones gráficas reales.
                     </p>
                   </div>
-                  
+
                   {/* SELECTOR DE TÉCNICA */}
                   <div className="flex bg-[#0d0f14] p-1 rounded-xl border border-white/5 self-start">
                     <button
                       onClick={() => setSelectedExpl('buggy')}
-                      className={`px-4 py-2 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer ${
-                        selectedExpl === 'buggy'
-                          ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                          : 'text-[#94a3b8] hover:text-white'
-                      }`}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer ${selectedExpl === 'buggy'
+                        ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                        : 'text-[#94a3b8] hover:text-white'
+                        }`}
                     >
                       Buggy Choke
                     </button>
                     <button
                       onClick={() => setSelectedExpl('octopus')}
-                      className={`px-4 py-2 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer ${
-                        selectedExpl === 'octopus'
-                          ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-                          : 'text-[#94a3b8] hover:text-white'
-                      }`}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer ${selectedExpl === 'octopus'
+                        ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                        : 'text-[#94a3b8] hover:text-white'
+                        }`}
                     >
                       Octopus Guard
                     </button>
@@ -864,11 +880,11 @@ graph TD
                         <div className="space-y-2">
                           <span className="text-[10px] font-mono text-white/40 block uppercase">Fotografía Real Demostrativa:</span>
                           <div className="relative rounded-2xl border border-white/10 overflow-hidden bg-black shadow-xl group">
-                            <SafeBJJImage 
-                              src={imageUrl} 
-                              alt="Demostración real de la técnica recopilada de internet" 
+                            <SafeBJJImage
+                              src={imageUrl}
+                              alt="Demostración real de la técnica recopilada de internet"
                               placeholderText={selectedExpl === 'buggy' ? "BuggyNormal" : "OctopusGuard"}
-                              className="w-full h-auto aspect-video object-cover transition-all duration-300 group-hover:scale-102 filter brightness-95" 
+                              className="w-full h-auto aspect-video object-cover transition-all duration-300 group-hover:scale-102 filter brightness-95"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
                               <span className="text-[9px] font-mono text-white/60">
@@ -877,13 +893,13 @@ graph TD
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="bg-[#ff4444]/5 border border-[#ff4444]/15 rounded-xl p-4 flex gap-3 items-start">
                           <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />
                           <div className="space-y-1">
                             <span className="text-[10px] font-mono font-bold text-rose-400 uppercase block">NOTA DE SEGURIDAD</span>
                             <p className="text-[11px] text-[#94a3b8] leading-normal font-sans">
-                              {selectedExpl === 'buggy' 
+                              {selectedExpl === 'buggy'
                                 ? "Evita jalar tu propio pie con rudeza. El ajuste debe venir de la flexión abdominal y de acomodar la cadera para no torcer ni lastimar tus ligamentos de rodilla."
                                 : "No expongas tu cuello de forma estática al pasar el brazo. El movimiento de escape debe ser explosivo y continuo para que no te atrapen en guillotina."
                               }
@@ -904,7 +920,7 @@ graph TD
         {/* ════════════════════ TAB 3: SPARS & SCRAMBLES PLAYBOOK EXPLORER ════════════════════ */}
         {activeTab === 'scrambles' && (
           <div className="space-y-8 animate-fadeIn">
-            
+
             <div className="bg-[#11141d] border border-white/5 rounded-2xl p-8">
               <div className="flex items-center gap-3 mb-4">
                 <span className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
@@ -931,11 +947,10 @@ graph TD
                       setSelectedPlaybookCat(cat.id);
                       setActiveScrambleNode(flowchartNodesDetail[cat.id][0].id);
                     }}
-                    className={`p-3 rounded-lg text-xs font-bold font-mono transition-all text-center border ${
-                      selectedPlaybookCat === cat.id
-                        ? 'bg-amber-500/15 border-amber-400 text-white'
-                        : 'bg-black/30 border-white/5 text-[#94a3b8] hover:bg-black/50'
-                    }`}
+                    className={`p-3 rounded-lg text-xs font-bold font-mono transition-all text-center border ${selectedPlaybookCat === cat.id
+                      ? 'bg-amber-500/15 border-amber-400 text-white'
+                      : 'bg-black/30 border-white/5 text-[#94a3b8] hover:bg-black/50'
+                      }`}
                   >
                     {cat.label}
                   </button>
@@ -944,20 +959,19 @@ graph TD
 
               {/* DETALLE MULTI-VENTANA INTERACTIVO DEL SCRAMBLE ESPECÍFICO */}
               <div className="grid lg:grid-cols-12 gap-6 items-start">
-                
+
                 {/* LISTADO DE SUB-MOVIMIENTOS / HISTORIAS DEL PDF */}
                 <div className="lg:col-span-5 space-y-2">
                   <span className="text-[10px] font-mono uppercase tracking-wider text-amber-500 block">SUB-MOVIMIENTOS DE LA POSICIÓN</span>
-                  
+
                   {flowchartNodesDetail[selectedPlaybookCat]?.map((node) => (
                     <button
                       key={node.id}
                       onClick={() => setActiveScrambleNode(node.id)}
-                      className={`w-full text-left p-4 rounded-xl border transition-all space-y-1 block ${
-                        activeScrambleNode === node.id
-                          ? 'bg-[#161a24] border-amber-500/40 text-white'
-                          : 'bg-black/20 border-white/5 text-[#94a3b8] hover:bg-black/35'
-                      }`}
+                      className={`w-full text-left p-4 rounded-xl border transition-all space-y-1 block ${activeScrambleNode === node.id
+                        ? 'bg-[#161a24] border-amber-500/40 text-white'
+                        : 'bg-black/20 border-white/5 text-[#94a3b8] hover:bg-black/35'
+                        }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-extrabold text-xs">{node.name}</span>
@@ -993,7 +1007,7 @@ graph TD
                             <span className="text-[10px] text-amber-400 font-mono font-bold uppercase block">FUNCIONAMIENTO BIOMECÁNICO</span>
                             <p className="text-xs text-[#94a3b8] leading-relaxed text-justify">{node.biomechanics}</p>
                           </div>
-                          
+
                           <div className="bg-black/30 p-4 rounded-xl border border-white/5 space-y-1.5">
                             <span className="text-[10px] text-[#ff4444] font-mono font-bold uppercase block">CONTRARREMEDIO / VARIACIÓN TÁCTICA</span>
                             <p className="text-xs text-[#94a3b8] leading-relaxed text-justify">{node.counterOption}</p>
@@ -1026,7 +1040,7 @@ graph TD
         {/* ════════════════════ TAB 4: DIAGRAMA TÁCTICO FLOWCHART (MERMAID) ════════════════════ */}
         {activeTab === 'flowchart' && (
           <div className="space-y-8 animate-fadeIn">
-            
+
             <div className="bg-[#11141d] border border-white/5 rounded-2xl p-8">
               <div className="flex items-center justify-between border-b border-white/5 pb-4 mb-6">
                 <div className="flex items-center gap-3">
@@ -1078,7 +1092,7 @@ graph TD
                       </div>
 
                       <TransformComponent wrapperStyle={{ width: "100%", height: "100%", minHeight: "480px" }}>
-                        <div 
+                        <div
                           className="mermaid text-sm cursor-grab active:cursor-grabbing inline-block"
                         >
                           {flowchartCode}
@@ -1112,7 +1126,7 @@ graph TD
         {/* ════════════════════ TAB 5: ANÁLISIS DE FUERZAS VECTORIALES (INTERACTIVO COMPLETO) ════════════════════ */}
         {activeTab === 'vector' && (
           <div className="space-y-8 animate-fadeIn">
-            
+
             <div className="bg-[#11141d] border border-white/5 rounded-2xl p-8">
               <div className="flex items-center gap-3 mb-4">
                 <span className="p-2 rounded-lg bg-[#ff4444]/10 text-[#ff4444]">
@@ -1126,7 +1140,7 @@ graph TD
 
               {/* REJILLA DE LAS TRES VARIANTES */}
               <div className="grid lg:grid-cols-3 gap-8">
-                
+
                 {/* VARIANTE 1: BUGGY NORMAL */}
                 <div className="bg-[#161a24] p-5 rounded-2xl border border-white/5 space-y-4">
                   <div className="flex items-center justify-between border-b border-white/5 pb-2">
@@ -1139,11 +1153,11 @@ graph TD
 
                   {/* IMAGEN DE COMPRENSIÓN SQUEEZE */}
                   <div className="relative rounded-xl border border-white/10 overflow-hidden bg-[#0d0f14] shadow-2xl h-48 flex items-center justify-center">
-                    <SafeBJJImage 
-                      src={IMAGES.buggyNormal} 
-                      alt="Buggy Choke Normal" 
+                    <SafeBJJImage
+                      src={IMAGES.buggyNormal}
+                      alt="Buggy Choke Normal"
                       placeholderText="BuggyNormal"
-                      className="w-full h-full object-cover object-center filter brightness-100" 
+                      className="w-full h-full object-cover object-center filter brightness-100"
                     />
                     {/* SVG Flechas Biomecánicas (Vector Analysis Overlays) */}
                     <div className="absolute inset-0 z-10 pointer-events-none mix-blend-screen">
@@ -1167,9 +1181,8 @@ graph TD
                       <button
                         key={v.id}
                         onClick={() => setSelectedVector(v.id)}
-                        className={`text-[9px] font-mono font-bold px-1 py-1 rounded border transition-all text-center truncate ${
-                          selectedVector === v.id ? 'bg-rose-500/25 border-rose-500 text-white font-extrabold' : 'bg-black/30 border-white/5 text-white/50 hover:text-white'
-                        }`}
+                        className={`text-[9px] font-mono font-bold px-1 py-1 rounded border transition-all text-center truncate ${selectedVector === v.id ? 'bg-rose-500/25 border-rose-500 text-white font-extrabold' : 'bg-black/30 border-white/5 text-white/50 hover:text-white'
+                          }`}
                       >
                         {v.name.split(' — ')[0]}
                       </button>
@@ -1214,11 +1227,11 @@ graph TD
 
                   {/* IMAGEN DE COMPRENSIÓN SQUEEZE CORREGIDO CON REVERSE IMAGE */}
                   <div className="relative rounded-xl border border-white/10 overflow-hidden bg-[#0d0f14] shadow-2xl h-48 flex items-center justify-center">
-                    <SafeBJJImage 
-                      src={IMAGES.reverseBuggy} 
-                      alt="Buggy Invertido Mecánica" 
+                    <SafeBJJImage
+                      src={IMAGES.reverseBuggy}
+                      alt="Buggy Invertido Mecánica"
                       placeholderText="BuggyInvertido"
-                      className="w-full h-full object-cover object-center filter brightness-100" 
+                      className="w-full h-full object-cover object-center filter brightness-100"
                     />
                     <div className="absolute inset-0 z-10 pointer-events-none mix-blend-screen">
                       <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -1239,9 +1252,8 @@ graph TD
                       <button
                         key={v.id}
                         onClick={() => setSelectedVectorInv(v.id)}
-                        className={`text-[9px] font-mono font-bold px-1.5 py-1 rounded border transition-all text-center truncate ${
-                          selectedVectorInv === v.id ? 'bg-amber-500/25 border-amber-500 text-white font-extrabold' : 'bg-black/30 border-white/5 text-white/50 hover:text-white'
-                        }`}
+                        className={`text-[9px] font-mono font-bold px-1.5 py-1 rounded border transition-all text-center truncate ${selectedVectorInv === v.id ? 'bg-amber-500/25 border-amber-500 text-white font-extrabold' : 'bg-black/30 border-white/5 text-white/50 hover:text-white'
+                          }`}
                       >
                         {v.name.split(' — ')[0]}
                       </button>
@@ -1286,11 +1298,11 @@ graph TD
 
                   {/* IMAGEN DE COMPRENSIÓN SQUEEZE CORREGIDO CON IMAGEN EXPLICATIVA VISIBLE */}
                   <div className="relative rounded-xl border border-white/10 overflow-hidden bg-[#0d0f14] shadow-2xl h-48 flex items-center justify-center">
-                    <SafeBJJImage 
-                      src={IMAGES.buggyOneHand} 
-                      alt="Buggy Choke a Una Mano" 
+                    <SafeBJJImage
+                      src={IMAGES.buggyOneHand}
+                      alt="Buggy Choke a Una Mano"
                       placeholderText="Buggy1mano"
-                      className="w-full h-full object-cover object-center filter brightness-100" 
+                      className="w-full h-full object-cover object-center filter brightness-100"
                     />
                     <div className="absolute inset-0 z-10 pointer-events-none mix-blend-screen">
                       <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -1311,9 +1323,8 @@ graph TD
                       <button
                         key={v.id}
                         onClick={() => setSelectedVectorHand(v.id)}
-                        className={`text-[9px] font-mono font-bold px-1 py-1 rounded border transition-all text-center truncate ${
-                          selectedVectorHand === v.id ? 'bg-purple-500/25 border-purple-500 text-white font-extrabold' : 'bg-black/30 border-white/5 text-white/50 hover:text-white'
-                        }`}
+                        className={`text-[9px] font-mono font-bold px-1 py-1 rounded border transition-all text-center truncate ${selectedVectorHand === v.id ? 'bg-purple-500/25 border-purple-500 text-white font-extrabold' : 'bg-black/30 border-white/5 text-white/50 hover:text-white'
+                          }`}
                       >
                         {v.name.split(' — ')[0]}
                       </button>
@@ -1356,9 +1367,9 @@ graph TD
         {/* ════════════════════ TAB 6: PREPARACIÓN GPP (EXCEL) ════════════════════ */}
         {activeTab === 'gpp' && (
           <div className="space-y-8 animate-fadeIn">
-            
+
             <div className="bg-[#11141d] border border-white/5 rounded-2xl p-8">
-              
+
               <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4 border-b border-white/5 pb-6">
                 <div className="flex items-center gap-3">
                   <span className="p-2 rounded-lg bg-[#ff4444]/10 text-[#ff4444]">
@@ -1375,10 +1386,10 @@ graph TD
                   <div>
                     <span className="text-white/40 block uppercase text-[9px] tracking-wider">PESO DEL DEFENSOR</span>
                     <div className="flex items-center gap-1.5 mt-1">
-                      <input 
-                        type="number" 
-                        value={userWeight} 
-                        onChange={(e) => setUserWeight(Number(e.target.value))} 
+                      <input
+                        type="number"
+                        value={userWeight}
+                        onChange={(e) => setUserWeight(Number(e.target.value))}
                         className="w-14 bg-black/40 border border-white/10 text-white font-bold p-1 rounded font-mono text-center focus:border-[#ff4444]"
                       />
                       <span className="text-white/60">kg</span>
@@ -1412,16 +1423,16 @@ graph TD
                       routine.exercises.map((ex, exIdx) => (
                         <tr key={`${routine.day}-${exIdx}`} className="hover:bg-white/[0.02] transition-colors">
                           {exIdx === 0 && (
-                            <td 
-                              rowSpan={routine.exercises.length} 
+                            <td
+                              rowSpan={routine.exercises.length}
                               className="p-4 bg-[#161a24]/40 font-black text-[#ff4444] font-mono text-center border-r border-white/5 align-middle"
                             >
                               {routine.day}
                             </td>
                           )}
                           {exIdx === 0 && (
-                            <td 
-                              rowSpan={routine.exercises.length} 
+                            <td
+                              rowSpan={routine.exercises.length}
                               className="p-4 font-bold text-white/95 border-r border-white/5 align-middle font-mono text-[10px] uppercase tracking-wider"
                             >
                               {routine.group}
@@ -1480,7 +1491,7 @@ graph TD
         {/* ════════════════════ TAB 7: ESTIRAMIENTOS & REJILLA VISUAL ════════════════════ */}
         {activeTab === 'stretches' && (
           <div className="space-y-8 animate-fadeIn">
-            
+
             <div className="bg-[#11141d] border border-white/5 rounded-2xl p-8">
               <div className="flex items-center gap-3 mb-4">
                 <span className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
@@ -1503,11 +1514,11 @@ graph TD
                         </span>
                         <span className="text-[10px] text-white/40 block font-mono">MÉTODO PDF</span>
                       </div>
-                      
+
                       <h3 className="text-white font-extrabold text-md tracking-tight group-hover:text-emerald-400 transition-colors">
                         {s.name}
                       </h3>
-                      
+
                       <div>
                         <span className="text-[10px] uppercase font-mono tracking-wider text-white/30 block">Zona Fisiológica de Impacto</span>
                         <span className="text-xs text-amber-400 font-semibold">{s.target}</span>
@@ -1543,7 +1554,36 @@ graph TD
 
           </div>
         )}
+        {/* ════════════════════ TAB 8: CINTURÓN & PROGRESO ════════════════════ */}
+        {activeTab === 'belt' && (
+          <div className="space-y-6 animate-fadeIn">
+            <BeltTracker />
+            <ImprovementChecklist onProgressChange={setRadarData} />
+            <ProgressRadar progressData={radarData} />
+          </div>
+        )}
 
+        {/* ════════════════════ TAB 9: GAMEPLAN ════════════════════ */}
+        {activeTab === 'gameplan' && (
+          <div className="space-y-6 animate-fadeIn">
+            <GameplanTree />
+          </div>
+        )}
+
+        {/* ════════════════════ TAB 10: ENTRENOS & TIMER ════════════════════ */}
+        {activeTab === 'training' && (
+          <div className="space-y-6 animate-fadeIn">
+            <TrainingLog />
+            <RoundTimer />
+          </div>
+        )}
+
+        {/* ════════════════════ TAB 11: MAPA DE POSICIONES ════════════════════ */}
+        {activeTab === 'map' && (
+          <div className="space-y-6 animate-fadeIn">
+            <PositionMap />
+          </div>
+        )}
       </main>
 
       {/* ══ FOOTER ACADÉMICO PREMIUM ══ */}
